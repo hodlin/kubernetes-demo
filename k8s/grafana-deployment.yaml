@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: prometheus-grafana-secret
+                  key: grafana-admin-password
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: prometheus-grafana-secret
+                  key: grafana-admin-user
+          image: grafana/grafana
+          name: grafana
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - mountPath: /etc/grafana/provisioning/datasources
+              name: grafana-config-volume
+      restartPolicy: Always
+      volumes:
+        - name: grafana-config-volume
+          configMap:
+            name: grafana-configmap

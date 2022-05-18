@@ -25,13 +25,13 @@ spec:
           volumeMounts:
             - mountPath: /etc/prometheus
               name: prometheus-config-volume
-            # - mountPath: /prometheus
-            #   name: prom-data
+            - mountPath: /prometheus
+              name: prom-data
       restartPolicy: Always
       volumes:
         - name: prometheus-config-volume
           configMap:
             name: prometheus-configmap
-        # - name: prom-data
-        #   persistentVolumeClaim:
-        #     claimName: prom-data
+        - name: prom-data
+          persistentVolumeClaim:
+            claimName: prom-data
